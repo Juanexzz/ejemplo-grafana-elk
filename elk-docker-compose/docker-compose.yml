@@ -1,27 +1,26 @@
-version: '3.7'
-
 services:
   elasticsearch: # configures the Elasticsearch container.
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.5
     container_name: elasticsearch # Sets the name of the container to "elasticsearch."
     environment: # Configures environment variables for the Elasticsearch container, such as node name, discovery type, memory lock, and Java options for heap size.
       - node.name=elasticsearch
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - xpack.security.enabled=false # 8.x+ enables TLS + auth by default; disabled to keep plain HTTP like 7.x (dev only)
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - es-data:/usr/share/elasticsearch/data
+      - es-data-v9:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
     networks:
       - elk
 
   logstash: #configures the Logstash container.
-    image: docker.elastic.co/logstash/logstash:7.15.2
+    image: docker.elastic.co/logstash/logstash:9.5.5
     container_name: logstash # Sets the name of the container to "logstash."
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
@@ -37,12 +36,12 @@ services:
       - elasticsearch
 
   kibana: # Configures the Kibana container.
-    image: docker.elastic.co/kibana/kibana:7.15.2
+    image: docker.elastic.co/kibana/kibana:9.5.5
     container_name: kibana # Sets the name of the container to "kibana."
     ports:
       - "5601:5601"
     environment: # Sets the Elasticsearch URL and Node.js options for the Kibana container.
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - 'NODE_OPTIONS=--max-old-space-size=2048'
     networks:
       - elk
@@ -54,5 +53,5 @@ networks:
     driver: bridge
 
 volumes:
-  es-data:
+  es-data-v9:
     driver: local

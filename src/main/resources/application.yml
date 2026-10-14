@@ -1,9 +1,14 @@
+spring:
+  application:
+    name: gestion-configuracion-app
+  profiles:
+    active: logstash
+
 management:
   endpoints:
     web:
       exposure:
         include: '*'
-
-spring:
-  profiles:
-    active: console
+  metrics:
+    tags:
+      application: ${spring.application.name}
