@@ -1,8 +1,8 @@
 # Ejemplo Spring Boot con Grafana, Prometheus y Stack ELK (Reto 7)
 
 Este repositorio contiene una aplicación Spring Boot 3.5 con observabilidad completa mediante dos stacks de Docker Compose:
-- **Stack de Monitoreo (`monitoring/`)**: Prometheus (9090) y Grafana (3100/3000).
-- **Stack de Logs (`elk-docker-compose/`)**: Elasticsearch (9200), Logstash (5001 -> 5000) y Kibana (5601).
+- **Stack de Monitoreo (`monitoring/`)**: Prometheus (`9090`) y Grafana (`3100` -> `3000`).
+- **Stack de Logs (`elk-docker-compose/`)**: Elasticsearch (`9200`), Logstash (`5001` -> `5000`) y Kibana (`5601`).
 
 ---
 
@@ -51,22 +51,24 @@ done
 
 ---
 
-### 2. URLs de los Servicios
+### 2. Tabla de URLs Reales de los Servicios
 
-| Servicio | URL | Descripción |
-| :--- | :--- | :--- |
-| **Spring Boot App** | `http://localhost:8080` | Endpoint base de la API |
-| **API Saludo (INFO)** | `http://localhost:8080/api/saludo` | Genera log `INFO: Saludando` |
-| **API Despedida (ERROR)** | `http://localhost:8080/api/despedida` | Genera log `ERROR: Despidiendo` |
-| **Actuator Health** | `http://localhost:8080/actuator/health` | Estado de salud de la app |
-| **Actuator Prometheus** | `http://localhost:8080/actuator/prometheus` | Endpoint de métricas para Prometheus |
-| **Prometheus** | `http://localhost:9090` | Consola de Prometheus |
-| **Prometheus Targets** | `http://localhost:9090/targets` | Estado del target `MetricasGestion` |
-| **Grafana** | `http://localhost:3100` | Dashboard y métricas (puerto 3100 en host por exclusión de Windows en 3000; usuario: `admin`, contraseña: `admin`) |
-| **Elasticsearch** | `http://localhost:9200` | API del cluster Elasticsearch |
-| **Elasticsearch Índices** | `http://localhost:9200/_cat/indices?v` | Lista de índices generados (e.g. `gestion-configuracion-app-*`) |
-| **Kibana** | `http://localhost:5601` | Interfaz gráfica para visualización de logs |
-| **Logstash TCP Input** | `localhost:5001` | Puerto TCP mapeado al 5000 del contenedor para recibir logs en formato JSON |
+| Servicio | URL Real | Puerto Host | Descripción / Credenciales |
+| :--- | :--- | :--- | :--- |
+| **Spring Boot App** | [http://localhost:8080](http://localhost:8080) | `8080` | Endpoint base de la API |
+| **API Saludo (INFO)** | [http://localhost:8080/api/saludo](http://localhost:8080/api/saludo) | `8080` | Genera log `INFO: Saludando` |
+| **API Despedida (ERROR)** | [http://localhost:8080/api/despedida](http://localhost:8080/api/despedida) | `8080` | Genera log `ERROR: Despidiendo` |
+| **Actuator Health** | [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health) | `8080` | Estado de salud de la aplicación |
+| **Actuator Prometheus** | [http://localhost:8080/actuator/prometheus](http://localhost:8080/actuator/prometheus) | `8080` | Endpoint de métricas de Prometheus |
+| **Prometheus Web UI** | [http://localhost:9090](http://localhost:9090) | `9090` | Consola web de Prometheus |
+| **Prometheus Targets** | [http://localhost:9090/targets](http://localhost:9090/targets) | `9090` | Estado del target `MetricasGestion` (`UP`) |
+| **Grafana Web UI** | [http://localhost:3100](http://localhost:3100) | `3100` | Dashboard y métricas (puerto `3100` en host; credenciales: `admin` / `admin`) |
+| **Elasticsearch API** | [http://localhost:9200](http://localhost:9200) | `9200` | Información del cluster Elasticsearch |
+| **Elasticsearch Índices** | [http://localhost:9200/_cat/indices?v](http://localhost:9200/_cat/indices?v) | `9200` | Lista de índices generados (`gestion-configuracion-app-*`) |
+| **Kibana Web UI** | [http://localhost:5601](http://localhost:5601) | `5601` | Interfaz web para visualización de logs |
+| **Logstash TCP Input** | `localhost:5001` | `5001` | Socket TCP (mapeado al `5000` interno del contenedor) para logs JSON |
+
+> **Nota sobre el puerto de Grafana (3100)**: En Windows, el rango dinámico de puertos `2923 - 3022` suele estar reservado por Windows NAT / Hyper-V (`winnat`), lo que bloquea el bind directo al puerto `3000` en el host. Por ello, Grafana está expuesto en el puerto host `3100` (`3100:3000`).
 
 ---
 
